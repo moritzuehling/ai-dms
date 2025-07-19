@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2024",
+
+		"jsx": "react",
+		"jsxFactory": "vscpp",
+		"jsxFragmentFactory": "vscppf",
+
+    "module": "preserve",
+    "moduleResolution": "bundler",
+
+		"types": ["node", "jest", "express"],
+
+    "strict": true,
+  }
+}
