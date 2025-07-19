@@ -10,7 +10,6 @@ async function load(): Promise<{}> {
 }
 
 const cache: { [id: string]: File } = await load();
-
 export async function set(id: string, file: File) {
   cache[id] = file;
   return file;

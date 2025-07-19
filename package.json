@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "tsx ./src/main.ts"
+    "start": "tsx ./src/main.tsx"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +18,9 @@
     "@types/node": "^24.0.15",
     "@types/vscode": "^1.102.0",
     "@vscode/prompt-tsx": "0.4.0-alpha.5",
+    "concurrent-promise-queue": "^1.1.0",
     "dotenv": "^17.2.0",
+    "draftlog": "^1.0.13",
     "express": "^5.1.0",
     "openai": "^5.10.1",
     "tiktoken": "^1.0.21",

@@ -26,9 +26,15 @@ importers:
       '@vscode/prompt-tsx':
         specifier: 0.4.0-alpha.5
         version: 0.4.0-alpha.5
+      concurrent-promise-queue:
+        specifier: ^1.1.0
+        version: 1.1.0
       dotenv:
         specifier: ^17.2.0
         version: 17.2.0
+      draftlog:
+        specifier: ^1.0.13
+        version: 1.0.13
       express:
         specifier: ^5.1.0
         version: 5.1.0
@@ -367,6 +373,9 @@ packages:
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
+  concurrent-promise-queue@1.1.0:
+    resolution: {integrity: sha512-bOqQgTMX8yT2IggMoFY3eO0MPyThX6MbcU7uBKtq8rHuMOwakvKnsBogwKRsGw8tyc4hTnEzKH4J+WCjm/JFFg==}
+
   content-disposition@1.0.0:
     resolution: {integrity: sha512-Au9nRL8VNUut/XSzbQA38+M78dzP4D+eqg3gfJHMIHHYa3bg067xj1KxMUWj+VULbiZMowKngFFbKczUrNJ1mg==}
     engines: {node: '>= 0.6'}
@@ -399,6 +408,9 @@ packages:
   dotenv@17.2.0:
     resolution: {integrity: sha512-Q4sgBT60gzd0BB0lSyYD3xM4YxrXA9y4uBDof1JNYGzOXrQdQ6yX+7XIAqoFOGQFOTK1D3Hts5OllpxMDZFONQ==}
     engines: {node: '>=12'}
+
+  draftlog@1.0.13:
+    resolution: {integrity: sha512-GeMWOpXERBpfVDK6v7m0x1hPg8+g8ZsZWqJl2T17wHqrm4h8fnjiZmXcnCrmwogAc6R3YTxFXax15wezfuyCUw==}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -793,6 +805,10 @@ packages:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
+  uuid@8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
+
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
@@ -1083,6 +1099,10 @@ snapshots:
 
   color-name@1.1.4: {}
 
+  concurrent-promise-queue@1.1.0:
+    dependencies:
+      uuid: 8.3.2
+
   content-disposition@1.0.0:
     dependencies:
       safe-buffer: 5.2.1
@@ -1100,6 +1120,8 @@ snapshots:
   depd@2.0.0: {}
 
   dotenv@17.2.0: {}
+
+  draftlog@1.0.13: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -1578,6 +1600,8 @@ snapshots:
   undici-types@7.8.0: {}
 
   unpipe@1.0.0: {}
+
+  uuid@8.3.2: {}
 
   uuid@9.0.1: {}
 
