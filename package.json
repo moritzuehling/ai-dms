@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "tsx ./src/main.tsx"
+    "start": "tsx ./src/main.tsx",
+    "openapi": "dotenv ./openapi.sh"
   },
   "keywords": [],
   "author": "",
@@ -20,9 +21,11 @@
     "@vscode/prompt-tsx": "0.4.0-alpha.5",
     "concurrent-promise-queue": "^1.1.0",
     "dotenv": "^17.2.0",
+    "dotenv-cli": "^8.0.0",
     "draftlog": "^1.0.13",
     "express": "^5.1.0",
     "openai": "^5.10.1",
+    "openapi-typescript": "^7.8.0",
     "tiktoken": "^1.0.21",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
