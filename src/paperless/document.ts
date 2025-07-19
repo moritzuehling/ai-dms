@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
-dotenv.config();
+import { getFileDownload } from "../ai/file";
+dotenv.config({ quiet: true });
 const baseUrl = process.env["PAPERLESS_API"];
 const token = process.env["PAPERLESS_API_TOKEN"];
 
@@ -13,7 +14,9 @@ function fetch(url: string, req?: RequestInit) {
 }
 
 export async function getDocumentDownload(documentId: number) {
-  const data = await fetch(`/documents/${documentId}/download`);
-  const blob = await data.blob();
-  console.log("got ", blob.size, "bytes");
+  const id = `document${documentId}`;
+  return getFileDownload(id, async () => {
+    const data = await fetch(`/documents/${documentId}/download/`);
+    return await data.blob();
+  });
 }

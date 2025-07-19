@@ -6,6 +6,7 @@ import {
   UserMessage,
   type PromptSizing,
 } from "@vscode/prompt-tsx";
+import { getDocumentDownload } from "../paperless/document";
 
 export class MainPrompt extends PromptElement<{}, {}> {
   override async prepare() {
@@ -13,6 +14,7 @@ export class MainPrompt extends PromptElement<{}, {}> {
   }
 
   async render() {
+    // const doc = await getDocumentDownload(9);
     return (
       <>
         <SystemMessage>
@@ -22,7 +24,7 @@ export class MainPrompt extends PromptElement<{}, {}> {
           all relevant information is extracted from the document.
         </SystemMessage>
         <UserMessage>
-          <Image src="" detail="high" />
+          {/* <Image src={doc.uri!} detail="high" /> */}
         </UserMessage>
       </>
     );

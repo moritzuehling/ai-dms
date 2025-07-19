@@ -1,5 +1,4 @@
 import {
-  HTMLTracer,
   OutputMode,
   PromptRenderer,
   type ITokenizer,
@@ -7,11 +6,10 @@ import {
 import { MainPrompt } from "./prompt/ocr.js";
 import { encoding_for_model } from "tiktoken";
 import { ChatCompletionContentPartKind } from "@vscode/prompt-tsx/dist/base/output/rawTypes";
-import { getDocumentDownload } from "./paperless/document.js";
+import { gemini, gOpenai } from "./ai/google.js";
+import type { ChatCompletionAssistantMessageParam } from "openai/resources.js";
 
 const encoding = encoding_for_model("gpt-4o");
-console.log("Hello there from ts :)");
-
 const tokenizer: ITokenizer<OutputMode.OpenAI> = {
   mode: OutputMode.OpenAI,
   tokenLength(part, token) {
@@ -30,7 +28,6 @@ const tokenizer: ITokenizer<OutputMode.OpenAI> = {
   },
 };
 
-const tracer = new HTMLTracer();
 const renderer = new PromptRenderer(
   {
     modelMaxPromptTokens: 1000000,
@@ -39,10 +36,21 @@ const renderer = new PromptRenderer(
   {},
   tokenizer
 );
+/*
+const tracer: HTMLTracer | undefined = undefined as HTMLTracer | undefined; // new HTMLTracer();
 renderer.tracer = tracer;
-console.log(await renderer.render());
-
-const html = tracer.serveHTML().then((server) => {
+const html = tracer?.serveHTML().then((server) => {
   console.log("Server address:", server.address);
 });
-await html;
+*/
+
+const messages = await renderer.render();
+
+console.log(messages.messages);
+
+const res = await gOpenai.chat.completions.create({
+  model: "gemini-2.5-flash",
+  messages: messages.messages as any,
+});
+
+console.log(res.choices[0].message.content);
