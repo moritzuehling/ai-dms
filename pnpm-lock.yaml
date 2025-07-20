@@ -44,6 +44,9 @@ importers:
       openai:
         specifier: ^5.10.1
         version: 5.10.1(ws@8.18.3)
+      openapi-fetch:
+        specifier: ^0.14.0
+        version: 0.14.0
       openapi-typescript:
         specifier: ^7.8.0
         version: 7.8.0(typescript@5.8.3)
@@ -746,6 +749,12 @@ packages:
         optional: true
       zod:
         optional: true
+
+  openapi-fetch@0.14.0:
+    resolution: {integrity: sha512-PshIdm1NgdLvb05zp8LqRQMNSKzIlPkyMxYFxwyHR+UlKD4t2nUjkDhNxeRbhRSEd3x5EUNh2w5sJYwkhOH4fg==}
+
+  openapi-typescript-helpers@0.0.15:
+    resolution: {integrity: sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==}
 
   openapi-typescript@7.8.0:
     resolution: {integrity: sha512-1EeVWmDzi16A+siQlo/SwSGIT7HwaFAVjvMA7/jG5HMLSnrUOzPL7uSTRZZa4v/LCRxHTApHKtNY6glApEoiUQ==}
@@ -1658,6 +1667,12 @@ snapshots:
   openai@5.10.1(ws@8.18.3):
     optionalDependencies:
       ws: 8.18.3
+
+  openapi-fetch@0.14.0:
+    dependencies:
+      openapi-typescript-helpers: 0.0.15
+
+  openapi-typescript-helpers@0.0.15: {}
 
   openapi-typescript@7.8.0(typescript@5.8.3):
     dependencies:

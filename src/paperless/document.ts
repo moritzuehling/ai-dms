@@ -1,39 +1,28 @@
-import dotenv from "dotenv";
 import { getFileDownload } from "../ai/file";
-dotenv.config({ quiet: true });
-const baseUrl = process.env["PAPERLESS_API"];
-const token = process.env["PAPERLESS_API_TOKEN"];
-
-function fetch(url: string, req?: RequestInit) {
-  return globalThis.fetch(`${baseUrl}${url}`, {
-    ...req,
-    headers: {
-      "content-type": "application/json",
-      authorization: `Token ${token}`,
-      ...(req?.headers ?? {}),
-    },
-  });
-}
+import { api, apiFetch, fill } from "./api";
 
 export async function getDocumentDownload(documentId: number) {
   const id = `document${documentId}`;
   return getFileDownload(id, async () => {
-    const data = await fetch(`/documents/${documentId}/download/`);
+    const data = await apiFetch(`"/api/documents/${documentId}/download/"`);
     return await data.blob();
   });
 }
 
 export async function getToOCR() {
-  const res = await fetch(
-    '/documents/?custom_field_query=["full-ocr", "exists", false]'
-  );
-  return await res.json();
+  return await api.GET("/api/documents/", {
+    params: {
+      query: {
+        custom_field_query: JSON.stringify(["full-ocr", "exists", false]),
+      },
+    },
+  });
 }
 
 export async function setContent(documentId: number, content: string) {
-  await fetch(`/documents/${documentId}/`, {
-    method: "PATCH",
-    body: JSON.stringify({
+  return await api.PATCH("/api/documents/{id}/", {
+    ...fill(documentId),
+    body: {
       content,
       custom_fields: [
         {
@@ -41,7 +30,8 @@ export async function setContent(documentId: number, content: string) {
           value: "done",
         },
       ],
-    }),
+      remove_inbox_tags: false,
+    },
   });
 }
 

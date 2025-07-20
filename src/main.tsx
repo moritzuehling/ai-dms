@@ -1,15 +1,17 @@
 import { ConcurrentPromiseQueue } from "concurrent-promise-queue";
 import { llm } from "./ai/request.js";
 import { getToOCR, setContent } from "./paperless/document.js";
+
 import { MainPrompt } from "./prompt/ocr.js";
 import into from "draftlog";
-into(console).addLineListener(process.stdin);
+into(console);
 
 const todo = await getToOCR();
-const docIds: number[] = todo.results.map((a) => a.id);
-docIds.sort();
+const docIds = todo.data!.results.map((a) => a.id);
 
-const queue = new ConcurrentPromiseQueue({ maxNumberOfConcurrentPromises: 8 });
+const queue = new ConcurrentPromiseQueue<void>({
+  maxNumberOfConcurrentPromises: 1,
+});
 
 await Promise.all(
   docIds.map((doc) => {
@@ -20,7 +22,7 @@ await Promise.all(
       draft("processing");
       const now = performance.now();
 
-      const res = await ocr(doc);
+      const res = await llm(<MainPrompt docId={doc} />);
       draft("uploading");
 
       await setContent(doc, res.message.content!);
@@ -30,7 +32,3 @@ await Promise.all(
     });
   })
 );
-
-function ocr(docId: number) {
-  return llm(<MainPrompt docId={docId} />);
-}

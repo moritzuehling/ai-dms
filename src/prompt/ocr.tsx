@@ -5,7 +5,6 @@ import {
   SystemMessage,
   UserMessage,
   type BasePromptElementProps,
-  type PromptSizing,
 } from "@vscode/prompt-tsx";
 import { getDocumentDownload } from "../paperless/document";
 
