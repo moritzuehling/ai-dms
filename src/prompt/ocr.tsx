@@ -7,6 +7,7 @@ import {
   type BasePromptElementProps,
 } from "@vscode/prompt-tsx";
 import { getDocumentDownload } from "../paperless/document";
+import { RawDocument } from "./parts/Document";
 
 export class OCRPrompt extends PromptElement<
   { docId: number } & BasePromptElementProps,
@@ -17,7 +18,6 @@ export class OCRPrompt extends PromptElement<
   }
 
   async render() {
-    const doc = await getDocumentDownload(this.props.docId);
     return (
       <>
         <SystemMessage>
@@ -36,7 +36,7 @@ export class OCRPrompt extends PromptElement<
         </SystemMessage>
         <UserMessage>
           Analyze the following document:
-          <Image src={doc.uri!} detail="high" />
+          <RawDocument docId={this.props.docId} />
         </UserMessage>
       </>
     );

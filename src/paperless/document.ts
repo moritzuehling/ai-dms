@@ -9,11 +9,25 @@ export async function getDocumentDownload(documentId: number) {
   });
 }
 
+export async function getDoc(id: number) {
+  return await api.GET("/api/documents/{id}/", fill(id));
+}
+
 export async function getToOCR() {
   return await api.GET("/api/documents/", {
     params: {
       query: {
-        custom_field_query: JSON.stringify(["full-ocr", "exists", true]),
+        custom_field_query: JSON.stringify(["full-ocr", "exists", false]),
+      },
+    },
+  });
+}
+
+export async function getToSummarize() {
+  return await api.GET("/api/documents/", {
+    params: {
+      query: {
+        custom_field_query: JSON.stringify(["summary-id", "exists", false]),
       },
     },
   });
@@ -36,27 +50,13 @@ export async function setContent(documentId: number, content: string) {
 }
 
 export async function setSummary(documentId: number, contents: string) {
-  /*
-  const res = await fetch(`/documents/${documentId}/notes/`, {
-    method: "POST",
-    body: JSON.stringify({
-      note: contents,
-    }),
-  });
+  const doc = await getDoc(documentId);
 
-  const notes = await res.json();
-  const noteId = notes[notes.length - 1].id;
-
-  await fetch(`/documents/${documentId}/`, {
-    method: "PATCH",
-    body: JSON.stringify({
-      custom_fields: [
-        {
-          field: 10,
-          value: noteId + "",
-        },
-      ],
-    }),
+  await api.PATCH("/api/documents/{id}/", {
+    ...fill(documentId),
+    body: {
+      content: `<summary>\n${contents}\n</summary>\n\n${doc.data!.content}`,
+      remove_inbox_tags: false,
+    },
   });
-  */
 }
