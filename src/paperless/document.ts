@@ -13,7 +13,7 @@ export async function getToOCR() {
   return await api.GET("/api/documents/", {
     params: {
       query: {
-        custom_field_query: JSON.stringify(["full-ocr", "exists", false]),
+        custom_field_query: JSON.stringify(["full-ocr", "exists", true]),
       },
     },
   });

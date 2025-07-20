@@ -8,7 +8,7 @@ import {
 } from "@vscode/prompt-tsx";
 import { getDocumentDownload } from "../paperless/document";
 
-export class MainPrompt extends PromptElement<
+export class OCRPrompt extends PromptElement<
   { docId: number } & BasePromptElementProps,
   {}
 > {

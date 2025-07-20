@@ -2,17 +2,27 @@ import { ConcurrentPromiseQueue } from "concurrent-promise-queue";
 import { llm } from "./ai/request.js";
 import { getToOCR, setContent } from "./paperless/document.js";
 
-import { MainPrompt } from "./prompt/ocr.js";
+import { OCRPrompt } from "./prompt/ocr.js";
 import into from "draftlog";
+import { setState, taskQueue } from "./util/queue.js";
 into(console);
 
 const todo = await getToOCR();
 const docIds = todo.data!.results.map((a) => a.id);
 
-const queue = new ConcurrentPromiseQueue<void>({
-  maxNumberOfConcurrentPromises: 1,
-});
+await taskQueue(
+  (id) => `Document ${id.toString().padStart(3)}`,
+  docIds,
+  async (id) => {
+    setState("✨ Analyzing");
+    const res = await llm(<OCRPrompt docId={id} />);
 
+    setState("uploading");
+    await setContent(id, res.message.content!);
+  }
+);
+
+/*
 await Promise.all(
   docIds.map((doc) => {
     const prefix = [`Document ${doc}:`];
@@ -22,7 +32,7 @@ await Promise.all(
       draft("processing");
       const now = performance.now();
 
-      const res = await llm(<MainPrompt docId={doc} />);
+      const res = await llm(<OCRPrompt docId={doc} />);
       draft("uploading");
 
       await setContent(doc, res.message.content!);
@@ -32,3 +42,4 @@ await Promise.all(
     });
   })
 );
+*/
