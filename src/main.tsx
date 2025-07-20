@@ -1,5 +1,6 @@
 import { llm } from "./ai/request.js";
 import {
+  getAllCorrespondents,
   getAllDocs,
   getToClassify,
   getToOCR,
@@ -13,7 +14,6 @@ import { taskQueue } from "./util/queue.js";
 import { SummarizeDoc } from "./prompt/summary.js";
 import { ClassifyDoc, classifySchema } from "./prompt/classify.js";
 import { createTask, update } from "./util/console-task.js";
-import { zodResponseFormat } from "openai/helpers/zod";
 import { api, fill } from "./paperless/api.js";
 
 await Promise.all([doOCR(), doSummarize(), doClassify()]);

@@ -9,6 +9,7 @@ import { $, $1, List } from "../format/elements";
 import { api } from "../../paperless/api";
 import type { ChatResponsePart } from "@vscode/prompt-tsx/dist/base/vscodeTypes";
 import type { Progress, CancellationToken } from "vscode";
+import { getAllCorrespondents } from "../../paperless/document";
 
 export class AvailableTagsFakeTool extends Part<{}> {
   render() {
@@ -61,12 +62,7 @@ export class AvailableTagsFakeTool extends Part<{}> {
 
 export class AvailableCorrespondents extends Part<{}> {
   async render() {
-    const res = await api.GET("/api/correspondents/");
-
-    const data = res.data!.results.map((a) => ({
-      id: a.id,
-      name: a.name,
-    }));
+    const data = await getAllCorrespondents();
 
     return (
       <FakeToolcall name="get_documentTypes">

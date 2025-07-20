@@ -18,6 +18,28 @@ export async function getAllDocs() {
   return await api.GET("/api/documents/");
 }
 
+type Correspondent = components["schemas"]["Correspondent"];
+export async function getAllCorrespondents() {
+  const data: Correspondent[] = [];
+  for (let page = 1; ; page++) {
+    const res = await api.GET("/api/correspondents/", {
+      params: {
+        query: { page, page_size: 100 },
+      },
+    });
+    const newE = res.data?.results ?? [];
+    if (newE.length > 0) {
+      data.push(...newE);
+      if (res.data?.next) {
+        continue;
+      }
+    }
+
+    break;
+  }
+  return data;
+}
+
 export async function getToClassify() {
   return await api.GET("/api/documents/", {
     params: {
@@ -48,7 +70,6 @@ export async function getToSummarize() {
     },
   });
 }
-
 export async function setContent(documentId: number, content: string) {
   return await api.PATCH("/api/documents/{id}/", {
     ...fill(documentId),
