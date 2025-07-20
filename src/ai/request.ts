@@ -9,24 +9,24 @@ import {
 } from "@vscode/prompt-tsx";
 import { gOpenai } from "./google";
 
+const encoding = encoding_for_model("gpt-4o");
 export async function llm<T extends BasePromptElementProps>(request: {
   ctor: PromptElementCtor<T, unknown>;
   props: T;
   children: null;
 }) {
-  const encoding = encoding_for_model("gpt-4o");
   const tokenizer: ITokenizer<OutputMode.OpenAI> = {
     mode: OutputMode.OpenAI,
     tokenLength(part, token) {
       if (part.type === ChatCompletionContentPartKind.Text) {
-        return 1 + encoding.encode(part.text).byteLength;
+        return 1 + part.text.length / 10; // encoding.encode(part.text).byteLength;
       }
 
       return Promise.resolve(0);
     },
     countMessageTokens(message) {
       if (typeof message.content == "string") {
-        return 1 + encoding.encode(message.content).byteLength;
+        return 1 + message.content.length / 10; // encoding.encode(message.content).byteLength;
       }
 
       return 200;

@@ -1,6 +1,6 @@
-import { ConcurrentPromiseQueue } from "concurrent-promise-queue";
 import { llm } from "./ai/request.js";
 import {
+  getAllDocs,
   getToOCR,
   getToSummarize,
   setContent,
@@ -8,12 +8,13 @@ import {
 } from "./paperless/document.js";
 
 import { OCRPrompt } from "./prompt/ocr.js";
-import into from "draftlog";
-import { setState, taskQueue } from "./util/queue.js";
+import { taskQueue } from "./util/queue.js";
 import { SummarizeDoc } from "./prompt/summary.js";
-into(console);
+import { ClassifyDoc } from "./prompt/classify.js";
+import { update } from "./util/console-task.js";
+llm(<ClassifyDoc docId={10} />);
 
-await doOCR();
+// await doOCR();
 await doSummarize();
 
 async function doOCR() {
@@ -23,27 +24,27 @@ async function doOCR() {
     (id) => `Document ${id.toString().padStart(3)}`,
     docIds,
     async (id) => {
-      setState("✨ Analyzing");
+      update("✨", "Analyzing");
       const res = await llm(<OCRPrompt docId={id} />);
 
-      setState("uploading");
+      update("🚀", "Uploading");
       await setContent(id, res.message.content!);
     }
   );
 }
 
 async function doSummarize() {
-  const todo = await getToSummarize();
+  const todo = await getAllDocs(); // getToSummarize();
   const docIds = todo.data!.results.map((a) => a.id);
   await taskQueue(
     (id) => `Summarizing ${id.toString().padStart(3)}`,
     docIds,
     async (id) => {
-      setState("✨ Analyzing");
+      update("✨", "Analyzing");
       const res = await llm(<SummarizeDoc docId={id} />);
 
-      setState("uploading");
-      await setSummary(id, res.message.content!);
+      update("🚀", "Uploading");
+      // await setSummary(id, res.message.content!);
     }
   );
 }

@@ -1,13 +1,11 @@
 import {
-  AssistantMessage,
   Image,
   PromptElement,
   SystemMessage,
   UserMessage,
   type BasePromptElementProps,
 } from "@vscode/prompt-tsx";
-import { getDocumentDownload } from "../paperless/document";
-import { RawDocument } from "./parts/Document";
+import { RawDocument } from "./parts/document";
 
 export class OCRPrompt extends PromptElement<
   { docId: number } & BasePromptElementProps,

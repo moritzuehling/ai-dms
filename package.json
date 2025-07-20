@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "tsx ./src/main.tsx",
+    "start": "tsx --inspect ./src/main.tsx",
     "openapi": "dotenv ./openapi.sh"
   },
   "keywords": [],

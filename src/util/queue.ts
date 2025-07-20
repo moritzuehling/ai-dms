@@ -1,7 +1,8 @@
 import { AsyncLocalStorage } from "async_hooks";
 import { ConcurrentPromiseQueue } from "concurrent-promise-queue";
-
-const draftCtx = new AsyncLocalStorage<(message: string) => void>();
+import into from "draftlog";
+import { createTask, update } from "./console-task";
+into(console);
 
 export function taskQueue<T, X>(
   prefix: (obj: T) => string,
@@ -9,35 +10,26 @@ export function taskQueue<T, X>(
   fn: (obj: T) => Promise<X>
 ): Promise<(X | null)[]> {
   const queue = new ConcurrentPromiseQueue<X>({
-    maxNumberOfConcurrentPromises: 5,
+    maxNumberOfConcurrentPromises: 14,
   });
 
   return Promise.all(
     objs.map((obj) => {
-      const message = prefix(obj);
-      const draft = console
-        .draft(message + ":", "⌛")
-        .bind(console, message + ":");
+      const ensureTask = createTask(prefix(obj));
 
       return queue.addPromise(() => {
-        draftCtx.enterWith(draft);
+        ensureTask();
+        update("🛫", "Started");
 
-        draft("🏃");
-
-        const now = performance.now();
         const res = fn(obj);
 
         res.then(() => {
-          const el = performance.now() - now;
-          draft(`✔ (${(el / 1000).toFixed(2)}s)`);
+          ensureTask();
+          update("🟢", "Finished", true);
         });
 
         return res;
       });
     })
   );
-}
-
-export function setState(text: string) {
-  draftCtx.getStore()?.(text);
 }

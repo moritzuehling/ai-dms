@@ -2,7 +2,7 @@ import { Image, SystemMessage, UserMessage } from "@vscode/prompt-tsx";
 import { getDocumentDownload } from "../paperless/document";
 import { Part, type BEP } from "./format/prompt-element";
 import { $, $1, List } from "./format/elements";
-import { DocumentContent } from "./parts/Document";
+import { DocumentContent } from "./parts/document";
 
 export class SummarizeDoc extends Part<{ docId: number }> {
   override async prepare() {}
