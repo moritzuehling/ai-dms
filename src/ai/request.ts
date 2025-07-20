@@ -8,13 +8,17 @@ import {
   type PromptElementCtor,
 } from "@vscode/prompt-tsx";
 import { gOpenai } from "./google";
+import type { ChatCompletionCreateParams } from "openai/resources/index.mjs";
 
 const encoding = encoding_for_model("gpt-4o");
-export async function llm<T extends BasePromptElementProps>(request: {
-  ctor: PromptElementCtor<T, unknown>;
-  props: T;
-  children: null;
-}) {
+export async function llm<T extends BasePromptElementProps>(
+  request: {
+    ctor: PromptElementCtor<T, unknown>;
+    props: T;
+    children: null;
+  },
+  respnseFormat?: ChatCompletionCreateParams["response_format"]
+) {
   const tokenizer: ITokenizer<OutputMode.OpenAI> = {
     mode: OutputMode.OpenAI,
     tokenLength(part, token) {
@@ -48,7 +52,7 @@ export async function llm<T extends BasePromptElementProps>(request: {
       model: "gemini-2.5-flash",
       messages: messages.messages as any,
       reasoning_effort: "low",
-      response_format: {
+      response_format: respnseFormat ?? {
         type: "text",
       },
     })

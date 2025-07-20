@@ -1,6 +1,7 @@
 import { llm } from "./ai/request.js";
 import {
   getAllDocs,
+  getToClassify,
   getToOCR,
   getToSummarize,
   setContent,
@@ -10,16 +11,12 @@ import {
 import { OCRPrompt } from "./prompt/ocr.js";
 import { taskQueue } from "./util/queue.js";
 import { SummarizeDoc } from "./prompt/summary.js";
-import { ClassifyDoc } from "./prompt/classify.js";
+import { ClassifyDoc, classifySchema } from "./prompt/classify.js";
 import { createTask, update } from "./util/console-task.js";
+import { zodResponseFormat } from "openai/helpers/zod";
+import { api, fill } from "./paperless/api.js";
 
-const res = await llm(<ClassifyDoc docId={7} />);
-console.log(res.message.content);
-
-process.exit();
-
-await doOCR();
-await doSummarize();
+await Promise.all([doOCR(), doSummarize(), doClassify()]);
 
 async function doOCR() {
   createTask("Gathering OCR docs");
@@ -54,7 +51,53 @@ async function doSummarize() {
       const res = await llm(<SummarizeDoc docId={id} />);
 
       update("🚀", "Uploading");
-      // await setSummary(id, res.message.content!);
+      await setSummary(id, res.message.content!);
     }
   );
+}
+
+async function doClassify() {
+  createTask("Classification docs");
+  const todo = await getToClassify();
+  update("🟢", `${todo.data?.results.length} to do`, true);
+
+  const docIds = todo.data!.results.map((a) => a.id);
+  await taskQueue(
+    (id) => `Classifying ${id.toString().padStart(3)}`,
+    docIds,
+    classifyDocument
+  );
+}
+
+async function classifyDocument(id: number) {
+  update("✨", "Analyzing");
+  const res = await llm(<ClassifyDoc docId={id} />, {
+    type: "json_object",
+  });
+
+  const dataJ = JSON.parse(res.message.content!);
+  const classification = classifySchema.parse(dataJ);
+
+  let correspondent = classification.correspondent;
+  if (typeof correspondent == "string") {
+    const res = await api.POST("/api/correspondents/", {
+      body: {
+        name: correspondent,
+        is_insensitive: true,
+      },
+    });
+    correspondent = res.data?.id!;
+  }
+
+  update("🚀", "Uploading");
+  await api.PATCH("/api/documents/{id}/", {
+    ...fill(id),
+    body: {
+      remove_inbox_tags: false,
+      document_type: classification.docType,
+      correspondent,
+      created: classification.documentDate,
+      title: classification.title,
+    },
+  });
 }

@@ -69,7 +69,7 @@ export class AvailableCorrespondents extends Part<{}> {
     }));
 
     return (
-      <FakeToolcall name="get_correspondents">
+      <FakeToolcall name="get_documentTypes">
         {JSON.stringify(data, undefined, 2)}
       </FakeToolcall>
     );

@@ -5,7 +5,7 @@ import type { components } from "./spec";
 export async function getDocumentDownload(documentId: number) {
   const id = `document${documentId}`;
   return getFileDownload(id, async () => {
-    const data = await apiFetch(`"/api/documents/${documentId}/download/"`);
+    const data = await apiFetch(`/api/documents/${documentId}/download/`);
     return await data.blob();
   });
 }
@@ -16,6 +16,17 @@ export async function getDoc(id: number) {
 
 export async function getAllDocs() {
   return await api.GET("/api/documents/");
+}
+
+export async function getToClassify() {
+  return await api.GET("/api/documents/", {
+    params: {
+      query: {
+        correspondent__isnull: true,
+        custom_field_query: JSON.stringify(["full-ocr", "exact", "done"]),
+      },
+    },
+  });
 }
 
 export async function getToOCR() {

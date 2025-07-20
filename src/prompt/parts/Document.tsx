@@ -38,6 +38,6 @@ export class DocumentSummary extends Part<{ docId: number }> {
       console.warn("Document", this.props.docId, "does not have a summary!");
     }
 
-    return <UserMessage>{summary ?? content}</UserMessage>;
+    return <>{summary ?? content}</>;
   }
 }

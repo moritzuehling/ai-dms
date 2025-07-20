@@ -8,12 +8,12 @@ export function taskQueue<T, X>(
   prefix: (obj: T) => string,
   objs: T[],
   fn: (obj: T) => Promise<X>
-): Promise<(X | null)[]> {
+): Promise<unknown> {
   const queue = new ConcurrentPromiseQueue<X>({
     maxNumberOfConcurrentPromises: 14,
   });
 
-  return Promise.all(
+  return Promise.allSettled(
     objs.map((obj) => {
       const ensureTask = createTask(prefix(obj));
 
@@ -23,10 +23,15 @@ export function taskQueue<T, X>(
 
         const res = fn(obj);
 
-        res.then(() => {
-          ensureTask();
-          update("🟢", "Finished", true);
-        });
+        res
+          .then(() => {
+            ensureTask();
+            update("🟢", "Finished", true);
+          })
+          .catch((e) => {
+            ensureTask();
+            update("🔴", e.toString().split("\n")[0]);
+          });
 
         return res;
       });
