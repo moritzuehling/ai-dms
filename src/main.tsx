@@ -11,14 +11,21 @@ import { OCRPrompt } from "./prompt/ocr.js";
 import { taskQueue } from "./util/queue.js";
 import { SummarizeDoc } from "./prompt/summary.js";
 import { ClassifyDoc } from "./prompt/classify.js";
-import { update } from "./util/console-task.js";
-llm(<ClassifyDoc docId={10} />);
+import { createTask, update } from "./util/console-task.js";
 
-// await doOCR();
+const res = await llm(<ClassifyDoc docId={7} />);
+console.log(res.message.content);
+
+process.exit();
+
+await doOCR();
 await doSummarize();
 
 async function doOCR() {
+  createTask("Gathering OCR docs");
   const todo = await getToOCR();
+  update("🟢", `${todo.data?.results.length} docs to OCR`, true);
+
   const docIds = todo.data!.results.map((a) => a.id);
   await taskQueue(
     (id) => `Document ${id.toString().padStart(3)}`,
@@ -34,7 +41,10 @@ async function doOCR() {
 }
 
 async function doSummarize() {
-  const todo = await getAllDocs(); // getToSummarize();
+  createTask("Gathering summarization docs");
+  const todo = await getToSummarize();
+  update("🟢", `${todo.data?.results.length} docs to summarize`, true);
+
   const docIds = todo.data!.results.map((a) => a.id);
   await taskQueue(
     (id) => `Summarizing ${id.toString().padStart(3)}`,
