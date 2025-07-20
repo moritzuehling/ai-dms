@@ -13,6 +13,7 @@ import { setState, taskQueue } from "./util/queue.js";
 import { SummarizeDoc } from "./prompt/summary.js";
 into(console);
 
+await doOCR();
 await doSummarize();
 
 async function doOCR() {

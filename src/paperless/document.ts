@@ -27,7 +27,7 @@ export async function getToSummarize() {
   return await api.GET("/api/documents/", {
     params: {
       query: {
-        custom_field_query: JSON.stringify(["summary-id", "exists", false]),
+        custom_field_query: JSON.stringify(["full-ocr", "exact", "ocr"]),
       },
     },
   });
@@ -41,7 +41,7 @@ export async function setContent(documentId: number, content: string) {
       custom_fields: [
         {
           field: 10,
-          value: "done",
+          value: "ocr",
         },
       ],
       remove_inbox_tags: false,
@@ -56,6 +56,12 @@ export async function setSummary(documentId: number, contents: string) {
     ...fill(documentId),
     body: {
       content: `<summary>\n${contents}\n</summary>\n\n${doc.data!.content}`,
+      custom_fields: [
+        {
+          field: 10,
+          value: "done",
+        },
+      ],
       remove_inbox_tags: false,
     },
   });
